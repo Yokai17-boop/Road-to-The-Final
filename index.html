@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Road to the Final</title>
+  <meta name="description" content="A cinematic World Cup journey generator for national teams." />
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@500,600,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js" defer></script>
+
+  <script src="./data.js" defer></script>
+  <script src="./script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="stadium-bg" aria-hidden="true">
+    <div class="stadium-sky"></div>
+    <div class="stadium-lights stadium-lights-left"></div>
+    <div class="stadium-lights stadium-lights-right"></div>
+    <div class="stadium-rings"></div>
+    <div class="stadium-pitch"></div>
+    <div class="stadium-grid"></div>
+    <div class="stadium-glow"></div>
+  </div>
+
+  <div class="page-shell">
+    <header class="topbar">
+      <p class="eyebrow">Hybrid World Cup prototype</p>
+    </header>
+
+    <main id="main">
+      <section class="hero hero-world">
+        <div class="hero-copy">
+          <p class="hero-kicker">Choose a nation</p>
+          <h1>ROAD TO THE FINAL</h1>
+          <p class="hero-subtitle">
+            Explore a team’s tactical identity, projected tournament route, and fan journey through the 2026 World Cup.
+          </p>
+        </div>
+
+        <div class="globe-block">
+          <div class="globe-frame">
+            <svg id="globeSvg" viewBox="0 0 760 760" aria-label="Interactive rotating world globe"></svg>
+            <div class="globe-ring globe-ring-a" aria-hidden="true"></div>
+            <div class="globe-ring globe-ring-b" aria-hidden="true"></div>
+          </div>
+
+          <div class="selector-card selector-card-hero">
+            <label class="field-label" for="teamSelect">World Cup team</label>
+            <div class="selector-row hero-selector-row">
+              <select id="teamSelect" aria-label="Select World Cup team"></select>
+              <button id="generateBtn" class="primary-btn">Start Journey</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tabs-shell panel is-hidden" id="contentStart" aria-hidden="true">
+        <div class="section-head compact-head">
+          <div>
+            <p class="section-kicker">Selected nation</p>
+            <h2 id="teamName">Argentina</h2>
+          </div>
+          <p id="teamHook" class="section-note"></p>
+        </div>
+
+        <div class="country-hero-card" id="countryHeroCard">
+          <div class="country-hero-left">
+            <p class="card-label">National profile</p>
+            <h3 id="countryHeroTitle">Team identity</h3>
+            <p id="identityStory" class="body-copy"></p>
+          </div>
+          <div class="country-hero-right">
+            <div class="country-chip-row">
+              <span class="meta-pill" id="countryConfed">Confederation</span>
+              <span class="meta-pill" id="countryTier">Tier</span>
+              <span class="meta-pill" id="countryGroup">Group</span>
+            </div>
+            <div class="country-stats" id="countryStats"></div>
+          </div>
+        </div>
+
+        <div class="tabs-bar" role="tablist" aria-label="Team journey sections">
+          <button id="tab-dna" class="tab-btn is-active" type="button" role="tab" aria-selected="true" aria-controls="panel-dna" tabindex="0">Tactical DNA</button>
+          <button id="tab-path" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="panel-path" tabindex="-1">Simulated Path</button>
+          <button id="tab-fan" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="panel-fan" tabindex="-1">Fan Experience</button>
+        </div>
+
+        <section id="panel-dna" class="tab-panel" role="tabpanel" aria-labelledby="tab-dna" tabindex="0">
+          <div class="panel-grid-dna">
+            <div>
+              <div id="identityGrid" class="identity-grid"></div>
+            </div>
+
+            <article class="mini-panel chart-card">
+              <p class="card-label">Style radar</p>
+              <p class="data-note" id="radarNote"></p>
+              <div class="chart-wrap">
+                <canvas id="radarChart"></canvas>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="panel-path" class="tab-panel" role="tabpanel" aria-labelledby="tab-path" tabindex="0" hidden>
+          <div class="section-head inner-head">
+            <div>
+              <p class="section-kicker">Tournament route</p>
+              <h2>Projected path</h2>
+            </div>
+            <p id="routeSummary" class="section-note"></p>
+          </div>
+
+          <p id="routeNote" class="data-note section-data-note"></p>
+
+          <div class="path-layout">
+            <div id="routeList" class="route-list"></div>
+            <div>
+              <article class="mini-panel side-note-card">
+                <p class="card-label">Knockout logic</p>
+                <p>A projected fan journey built from structure, tension, and likely turning points.</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="subsection-space">
+            <div class="section-head inner-head">
+              <div>
+                <p class="section-kicker">Matchup intelligence</p>
+                <h2>Tactical clash cards</h2>
+              </div>
+            </div>
+            <p id="clashNote" class="data-note section-data-note"></p>
+            <div id="clashGrid" class="clash-grid"></div>
+          </div>
+        </section>
+
+        <section id="panel-fan" class="tab-panel" role="tabpanel" aria-labelledby="tab-fan" tabindex="0" hidden>
+          <div class="section-head inner-head">
+            <div>
+              <p class="section-kicker">Travel culture</p>
+              <h2>Host-city guide</h2>
+            </div>
+          </div>
+
+          <p id="cityNote" class="data-note section-data-note"></p>
+
+          <div id="citiesGrid" class="cities-grid"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
